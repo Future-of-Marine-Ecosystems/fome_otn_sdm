@@ -82,6 +82,51 @@ spp_to_model
 #############################################################################
 ######################## Create Pseudo-absences (PA) ########################
 #############################################################################
+example <- rast('/Users/estebansal/Downloads/mercatorglorys12v1_gl12_mean_20210630_R20210707.nc')
+#dir_full <- "kdcmkqcm"
+
+
+names(example)
+#"zos" ... Sea surface hieght
+#"thetao_depth=0.49402499"... sea surface temperature
+#"so_depth=0.49402499" ... salinity 
+
+subset_raster <- subset(example, c("zos", "thetao_depth=0.49402499", "so_depth=0.49402499"))
+
+
+
+
+# Crop date range
+time(subset_raster)
+
+
+# Select spatial range 
+
+
+range(detect_filt$deploy_long)
+range(detect_filt$deploy_lat)
+
+ext
+reid <- crop(subset_raster, ext)
+
+
+
+# Format and stack em 
+raster_files <- list.files(dir_full, pattern = "\\.nc$", full.names = TRUE, recursive = TRUE)
+
+raster_stack <- raster::stack(raster_files) # stack em'
+raster_stack <- terra::rast(raster_stack) # turn to Terra package for Biomod 
+raster_mean <- mean(raster_stack)
+
+
+
+
+
+
+
+#############################################################################
+######################## Create Pseudo-absences (PA) ########################
+#############################################################################
 
 library(dismo)
 
