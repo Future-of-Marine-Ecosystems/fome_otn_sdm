@@ -9,11 +9,18 @@ library(glatos)
 library(terra)
 library(tidyterra)
 library(geodata)
-library(plotly)
+library(raster)
+library(terra)
 library(biomod2)
 
 # source functions
 source('functions.R')
+
+
+#############################################################################
+################### 1.Format and Visualize Acoustic Data  ###################
+#############################################################################
+
 
 # Data directory
 data_dir = './Data/'
@@ -79,29 +86,4 @@ events = detection_events(detect_filt, time_sep = 86400)
 # Species name
 spp_to_model = unique(detect_data$scientificname)
 spp_to_model
-
-############################################################################################
-############################################################################################
-############################################################################################
-
-# Download environmental data
-
-# Set up data for species distribution modelling - detections
-det_sdm_data <- BIOMOD_FormatingData(
-  resp.name = spp_to_model, resp.var = rep(1, nrow(detect_filt)), expl.var = envcrop_selvar,
-  resp.xy = detect_filt[, c("decimalLongitude", "decimalLatitude")],
-  PA.nb.rep = 1, PA.nb.absences = 1000, PA.strategy = "random", filter.raster = TRUE)
-
-# Set up data for species distribution modelling - events
-evt_sdm_data <- BIOMOD_FormatingData(
-  resp.name = spp_to_model, resp.var = rep(1, nrow(events)), expl.var = envcrop_selvar,
-  resp.xy = events[, c("deploy_long", "deploy_lat")],
-  PA.nb.rep = 1, PA.nb.absences = 1000, PA.strategy = "random", filter.raster = TRUE)
-
-
-
-
-
-
-
 
