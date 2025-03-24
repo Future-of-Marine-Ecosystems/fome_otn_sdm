@@ -28,8 +28,7 @@ length(unique(detect_data$animal_id))
 dets_rg = group_by(detect_data, detectedby) %>% summarize(n = n())
 dets_rg
 
-# Map
-
+# Map...
 # Generate x and y limits
 xlim = c(floor(min(detect_data$deploy_long))-1, ceiling(max(detect_data$deploy_long))+1)
 ylim = c(floor(min(detect_data$deploy_lat))-1, ceiling(max(detect_data$deploy_lat))+1)
@@ -74,135 +73,80 @@ detmap_f
 # Calculate detection events
 events = detection_events(detect_filt, time_sep = 86400)
 
-# test = otn_events(detect_filt)
-
 # Species name
 spp_to_model = unique(detect_data$scientificname)
 spp_to_model
-#############################################################################
-######################## Create Pseudo-absences (PA) ########################
-#############################################################################
-example <- rast('/Users/estebansal/Downloads/mercatorglorys12v1_gl12_mean_20210630_R20210707.nc')
-#dir_full <- "kdcmkqcm"
 
+#############################################################################
+########################## Climatology of env data  #########################
+#############################################################################
 
-names(example)
-#"zos" ... Sea surface hieght
+# Read location where you have your raster files 
+env_dir <- '/Users/estebansal/Documents/GitHub/fome_otn_sdm/Data/copernicus'
+env_files <- list.files(env_dir, pattern = "\\.nc$", full.names = TRUE, recursive = TRUE) #binary files... make sure you're readin in the correct format(.nc .tif .grd)
+
+# Load the raster files with raster package and then transform to terra package 
+env_stack <- raster::stack(env_files) #raster
+env_stack <- terra::rast(env_files) #terra
+
+# Subset enviormental variables for superficial layers only !!!
+names(env_stack)
+#"zos" ... Sea surface height
 #"thetao_depth=0.49402499"... sea surface temperature
 #"so_depth=0.49402499" ... salinity 
 
-subset_raster <- subset(example, c("zos", "thetao_depth=0.49402499", "so_depth=0.49402499"))
+zos_grep <- grep("zos", names(env_stack))
+thetao_grep <- grep("thetao_depth=0.49402499", names(env_stack))
+so_grep <- grep("so_depth=0.49402499", names(env_stack))
+
+# stack superficial layers
+zos_stack <- subset(env_stack, c(zos_grep))
+thetao_stack <- subset(env_stack,c(thetao_grep))
+so_stack <- subset(env_stack,c(so_grep))
+
+# Create a global climatology (average across months per env layer)
+global_zos <- mean(zos_stack)
+global_thetao <- mean(thetao_stack)
+global_so <- mean(so_stack)
+
+global_climatology <- c(global_zos, global_thetao, global_so)
+names(global_climatology) <- c("ssh", "sst", "sal") # change names
 
 
+###Create a regional climatology (average across months per env layer)
 
+# Select spatial range .... 
+ext <- c(-72, -57, 41, 50) # spatial extent (xmin, xmax, ymin, ymax)
+zos_stack <- crop(zos_stack, ext)
+thetao_stack <- crop(thetao_stack, ext)
+so_stack <- crop(so_stack, ext)
 
-# Crop date range
-time(subset_raster)
+# Create regional climatology
+zos_mean <- mean(zos_stack)
+thetao_mean <- mean(thetao_stack)
+so_mean <- mean(so_stack)
 
+regional_climatology <- c(zos_mean, thetao_mean, so_mean)
+names(regional_climatology) <- c("ssh", "sst", "sal")
 
-# Select spatial range 
-
-
-range(detect_filt$deploy_long)
-range(detect_filt$deploy_lat)
-
-ext
-reid <- crop(subset_raster, ext)
-
-
-
-# Format and stack em 
-raster_files <- list.files(dir_full, pattern = "\\.nc$", full.names = TRUE, recursive = TRUE)
-
-raster_stack <- raster::stack(raster_files) # stack em'
-raster_stack <- terra::rast(raster_stack) # turn to Terra package for Biomod 
-raster_mean <- mean(raster_stack)
-
-
-
-
-
-
-
-#############################################################################
-######################## Create Pseudo-absences (PA) ########################
-#############################################################################
-
-library(dismo)
-
-range(detect_filt$deploy_long)
-range(detect_filt$deploy_lat)
-date_sequence<- range(detect_filt$detection_timestamp_utc)
-
-ext <- extent(-70.05312, -58.81101,42.83728, 48.85370)
-n= 1000
-p = spp_env_df %>% dplyr::select("deploy_long", "deploy_lat") 
-mask <- raster('/Users/estebansal/Downloads/cmems_mod_glo_phy_anfc_0.083deg-sst-anomaly_P1D-m_1742477208324.nc')
-pa <- randomPoints(mask, n, p, ext=NULL, extf=1.1, excludep=TRUE)
-pa <- as.data.frame(pa)
-
-#Create random dates for PA
-random_dates <- sample(date_sequence, size = 1000, replace = TRUE)
-pa <- cbind(pa, random_dates)
-pa$Response <- 0
-names(pa) <- c("lon", "lat", "date", "response")
-pa$id <- "PA"
-
-pa <- pa%>% dplyr::select("id", "date", "lon", "lat", "response")
-
-
-# Format True Prescences
-spp_env_df <- detect_filt
-spp_env_df <- spp_env_df %>% dplyr::select(2, 19, 21,22, 37,38)
-names(spp_env_df) <- c('id', 'date', 'lon', 'lat', 'sst', 'response')
-spp_env_df <- as.data.frame(spp_env_df)
-spp_env_df$Response <- 1
-
-
-spp_PA <- rbind(spp_env_df, pa)
-
+regional_climatology # raster stack to be used to format biomod
 
 #############################################################################
-########################### Extract enviormental data #######################
+########################## Extract environmental data ######################
 #############################################################################
-  
-library(rerddapXtracto)
-spp_PA # Our data frame
-# Set spatio-temporal limits
-xpos <- spp_PA$lon
-ypos <- spp_PA$lat
-tpos <- spp_PA$date
-
-
-
-# Sea Surface Temperature (SST) 
-sst_dataInfo <- rerddap::info('jplMURSST41') #daily, 0.025 degrees, gaps 
-
-ssta <- rxtracto(sst_dataInfo, parameter = 'analysed_sst', xcoord = xpos, ycoord = ypos, tcoord =tpos, xlen = .1, ylen = .1,  progress_bar = TRUE)
-
-# Extract SST mean... 
-sst_mean <- ssta$`mean analysed_sst`
-summary(sst_mean)
-
-
-
-#CHL 
-chl_dataInfo <- rerddap::info('erdMH1chla1day_R2022SQ')  
-
-
-
+coords <- spp_env_df[, 3:4] # select coordinates
+env_extract <- terra::extract(climatology, coords) #extract
+env_extract <- env_extract[ ,-1] # delete first column
+spp_env_df <- cbind(spp_env_df, env_extract) # bind them with data frame 
 
 #############################################################################
 ######################## Format data to BIOMOD2 #############################
 #############################################################################
 
-length(sst_mean)
-spp_PA$sst <- sst_mean
-
 # Prepare data for BIOMOD2 -------------------------------------------------
-Var_extracted <- spp_PA %>% dplyr::select("sst")#Extracted enviormental data
-resp.xy <- spp_PA %>% dplyr::select("lon", "lat") # Locations (Longitude, Latitude)
-MyRespVar <- spp_PA %>% dplyr::select("response") # Prescence/Absence data (binary)
+Var_extracted <- spp_env_df %>% dplyr::select("ssh", "sst", "sal")#Extracted enviormental data
+resp.xy <- spp_env_df %>% dplyr::select("lon", "lat") # Locations (Longitude, Latitude)
+MyRespVar <- spp_env_df %>% dplyr::select("response") # Prescence/Absence data (binary)
 
 #Rename object to keep it cleaner
 myRespXY <- resp.xy
@@ -213,25 +157,23 @@ expl.var <- Var_extracted
 # Set up data for species distribution modelling - detections
 det_sdm_data <- BIOMOD_FormatingData(
   resp.name = spp_to_model,
-  expl.var = expl.var,
+  expl.var = climatology,
   resp.var = MyRespVar,
-  resp.xy = myRespXY)
+  resp.xy = myRespXY, 
+  PA.nb.rep = 1,
+  PA.nb.absences = 1000, 
+  PA.strategy = "random")
 
-# Set up data for species distribution modelling - events
-evt_sdm_data <- BIOMOD_FormatingData(
-  resp.name = spp_to_model, 
-  resp.var = rep(1, nrow(events)), expl.var = envcrop_selvar,
-  resp.xy = events[, c("deploy_long", "deploy_lat")],
-  PA.nb.rep = 1, PA.nb.absences = 1000, PA.strategy = "random", filter.raster = TRUE)
+
+#############################################################################
+########################### Modelling in Biomod2  ###########################
+#############################################################################
 
 # Modelling in Biomod 
-
 myBiomodModelOut <- BIOMOD_Modeling(bm.format = det_sdm_data,
                                     modeling.id = 'Example',
                                     models = c('RF', 'GLM', 'GAM'),
                                     CV.strategy = 'kfold',
-                                    #CV.nb.rep = 5,
-                                    #CV.perc = 0.8,
                                     CV.k = 5, 
                                     OPT.strategy = 'default',
                                     metric.eval = c('TSS','ROC'),
@@ -254,7 +196,9 @@ bm_PlotResponseCurves(bm.out = myBiomodModelOut,
                       fixed.var = 'mean')
 
 
-# Ensemble model
+#############################################################################
+############################# Ensemble modelling ############################
+#############################################################################
 
 myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
                                       models.chosen = 'all',
