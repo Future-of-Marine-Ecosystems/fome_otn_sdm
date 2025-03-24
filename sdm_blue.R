@@ -157,7 +157,7 @@ expl.var <- Var_extracted
 # Set up data for species distribution modelling - detections
 det_sdm_data <- BIOMOD_FormatingData(
   resp.name = spp_to_model,
-  expl.var = climatology,
+  expl.var = regional_climatology,
   resp.var = MyRespVar,
   resp.xy = myRespXY, 
   PA.nb.rep = 1,
@@ -216,3 +216,18 @@ myBiomodEM
 get_evaluations(myBiomodEM)
 get_variables_importance(myBiomodEM)
 
+#############################################################################
+############################# Ensemble modelling ############################
+#############################################################################
+
+
+# Project ensemble models (building single projections)
+myBiomodEMProj <- BIOMOD_EnsembleForecasting(bm.em = myBiomodEM,
+                                             proj.name = 'Current_proj',
+                                             new.env = regional_climatology,
+                                             models.chosen = 'all',
+                                             metric.binary = 'all',
+                                             metric.filter = 'all')
+
+myBiomodEMProj
+plot(myBiomodEMProj[1])
