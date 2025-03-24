@@ -66,9 +66,6 @@ bio_oracle <- raster::stack(rast(paste0(dir, list.files(dir))))
 # Grab number of layers
 nlayers = nlayers(bio_oracle)
 
-# Change bathymetry date to match others
-bio_oracle$layers[[4]]$z = '2010-01-01'
-
 # Translate rasters to terra
 bio_oracle = terra::rast(bio_oracle)
 
