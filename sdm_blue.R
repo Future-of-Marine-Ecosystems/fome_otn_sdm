@@ -10,6 +10,7 @@ library(terra)
 library(tidyterra)
 library(geodata)
 library(biomod2)
+library(ggpubr)
 
 
 #############################################################################
@@ -65,6 +66,34 @@ bm_PlotResponseCurves(bm.out = myBiomodModelOut,
                       models.chosen = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
                       fixed.var = 'mean')
 
+# Projections
+
+# Random forest
+bm_projection_rf <- BIOMOD_Projection(
+  bm.mod = myBiomodModelOut, new.env = bio_oracle,
+  models.chosen = get_built_models(myBiomodModelOut)[1],
+  proj.name = "Current", metric.binary = "all",
+  metric.filter = "all"
+)
+p1 = plot(bm_projection_rf)
+
+# GLM
+bm_projection_glm <- BIOMOD_Projection(
+  bm.mod = myBiomodModelOut, new.env = bio_oracle,
+  models.chosen = get_built_models(myBiomodModelOut)[2],
+  proj.name = "Current", metric.binary = "all",
+  metric.filter = "all"
+)
+p2 = plot(bm_projection_glm)
+
+# GAM
+bm_projection_gam <- BIOMOD_Projection(
+  bm.mod = myBiomodModelOut, new.env = bio_oracle,
+  models.chosen = get_built_models(myBiomodModelOut)[3],
+  proj.name = "Current", metric.binary = "all",
+  metric.filter = "all"
+)
+p3 = plot(bm_projection_gam)
 
 #############################################################################
 ############################# Ensemble modelling ############################
@@ -94,10 +123,15 @@ get_variables_importance(myBiomodEM)
 # Project ensemble models (building single projections)
 myBiomodEMProj <- BIOMOD_EnsembleForecasting(bm.em = myBiomodEM,
                                              proj.name = 'Current_proj',
-                                             new.env = regional_climatology,
+                                             new.env = bio_oracle,
                                              models.chosen = 'all',
                                              metric.binary = 'all',
                                              metric.filter = 'all')
 
-myBiomodEMProj
-plot(myBiomodEMProj[1])
+# Plot ensemble projection
+p4 = plot(myBiomodEMProj, plot.output = 'list')[[3]]
+
+# Plot all projections
+ggarrange(p1, p2, p3, p4,
+          labels = c("RF", "GLM", "GAM", "Ensemble"),
+          ncol = 2, nrow = 2)
