@@ -18,10 +18,10 @@ library(ggpubr)
 #############################################################################
 
 # Data to model
-spp_env_df = detect_filt
+spp_env_df = events
 
 # Prepare data for BIOMOD2 -------------------------------------------------
-lonlat <- spp_env_df %>% dplyr::select("deploy_long", "deploy_lat") # Locations (Longitude, Latitude)
+lonlat <- spp_env_df %>% dplyr::select("mean_longitude", "mean_latitude") # Locations (Longitude, Latitude)
 presences <- rep(1, nrow(spp_env_df))
 
 

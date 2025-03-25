@@ -28,13 +28,6 @@ data_dir = './Data/'
 # Load in data
 detect_data = otn_read(data_dir)
 
-# How many animals
-length(unique(detect_data$animal_id))
-
-# Number of detections by receiver group
-dets_rg = group_by(detect_data, detectedby) %>% summarize(n = n())
-dets_rg
-
 # Map
 
 # Generate x and y limits
@@ -78,10 +71,20 @@ detmap_f = ggplot() +
   geom_point(data = detect_filt, aes(x = deploy_long, y = deploy_lat, color = detectedby))
 detmap_f
 
+# Data explorations
+
+# How many animals
+length(unique(detect_filt$animal_id))
+
+# Number of detections by receiver group
+dets_rg = group_by(detect_filt, detectedby) %>% summarize(n = n())
+dets_rg
+
+# Seasonal pattern
+ggplot(detect_filt, aes(x = julianday, y = deploy_lat, color = detectedby)) + geom_point()
+
 # Calculate detection events
 events = detection_events(detect_filt, time_sep = 86400)
-
-# test = otn_events(detect_filt)
 
 # Species name
 spp_to_model = unique(detect_data$scientificname)
