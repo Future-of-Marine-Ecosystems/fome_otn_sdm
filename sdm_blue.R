@@ -14,7 +14,7 @@ library(ggpubr)
 
 
 #############################################################################
-######################## Format data to BIOMOD2 #############################
+################# 3. Reformat data to biomod2 Data Format ###################
 #############################################################################
 
 # Data to model
@@ -37,7 +37,7 @@ det_sdm_data <- BIOMOD_FormatingData(
 
 
 #############################################################################
-########################### Modelling in Biomod2  ###########################
+################# 4. Running Species Distribution Models  ###################
 #############################################################################
 
 # Modelling in Biomod 
@@ -52,21 +52,7 @@ myBiomodModelOut <- BIOMOD_Modeling(bm.format = det_sdm_data,
                                     seed.val = 42, 
                                     do.progress = TRUE)
 
-
-# Represent evaluation scores & variables importance
-bm_PlotEvalMean(bm.out = myBiomodModelOut)
-bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'algo'))
-bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
-bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
-bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'run'))
-bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'run'))
-
-# Represent response curves
-bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-                      models.chosen = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
-                      fixed.var = 'mean')
-
-# Projections
+# Plot projections
 
 # Random forest
 bm_projection_rf <- BIOMOD_Projection(
@@ -95,8 +81,31 @@ bm_projection_gam <- BIOMOD_Projection(
 )
 p3 = plot(bm_projection_gam)
 
+
+
 #############################################################################
-############################# Ensemble modelling ############################
+################ 5. Evaluating Species Distribution Models  #################
+#############################################################################
+
+# Represent evaluation scores & variables importance
+bm_PlotEvalMean(bm.out = myBiomodModelOut)
+bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'algo'))
+bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'run'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'run'))
+
+# Represent response curves
+bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+                      models.chosen = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+                      fixed.var = 'mean')
+
+
+########## Return to presentation ##########
+
+
+#############################################################################
+########################### 6. Ensemble modelling ###########################
 #############################################################################
 
 myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
@@ -115,10 +124,6 @@ myBiomodEM
 get_evaluations(myBiomodEM)
 get_variables_importance(myBiomodEM)
 
-#############################################################################
-############################# Ensemble modelling ############################
-#############################################################################
-
 
 # Project ensemble models (building single projections)
 myBiomodEMProj <- BIOMOD_EnsembleForecasting(bm.em = myBiomodEM,
@@ -129,9 +134,17 @@ myBiomodEMProj <- BIOMOD_EnsembleForecasting(bm.em = myBiomodEM,
                                              metric.filter = 'all')
 
 # Plot ensemble projection
-p4 = plot(myBiomodEMProj, plot.output = 'list')[[3]]
+p4 = plot(myBiomodEMProj, plot.output = 'list')[[1]] # Unweighted
+p5 = plot(myBiomodEMProj, plot.output = 'list')[[3]] # Weighted
+
+# Plot all projections
+ggarrange(p4, p5,
+          labels = c("Unweighted", 'Weighted'),
+          ncol = 1, nrow = 2)
 
 # Plot all projections
 ggarrange(p1, p2, p3, p4,
           labels = c("RF", "GLM", "GAM", "Ensemble"),
           ncol = 2, nrow = 2)
+
+########## Return to presentation ##########

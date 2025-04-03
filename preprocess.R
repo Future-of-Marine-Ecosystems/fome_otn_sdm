@@ -16,6 +16,9 @@ library(biomod2)
 # source functions
 source('functions.R')
 
+# Either open the R Project in the GitHub repository or set working directory here:
+setwd(getwd())
+
 
 #############################################################################
 ################### 1.Format and Visualize Acoustic Data  ###################
@@ -28,7 +31,7 @@ data_dir = './Data/'
 # Load in data
 detect_data = otn_read(data_dir)
 
-# Map
+# Create a map of detections
 
 # Generate x and y limits
 xlim = c(floor(min(detect_data$deploy_long))-1, ceiling(max(detect_data$deploy_long))+1)
@@ -41,17 +44,19 @@ NorthAmerica <- gadm(country = country_codes("North America")$ISO3,
 
 # map method
 detmap_y = ggplot() +
-  geom_spatvector(data = NorthAmerica) +
-  coord_sf(xlim = xlim, ylim = ylim) +
+  geom_spatvector(data = NorthAmerica) + # Map baselayer
+  coord_sf(xlim = xlim, ylim = ylim) + # lat and lon limits
   geom_point(data = detect_data, aes(x = deploy_long, y = deploy_lat, color = detectedby))
 detmap_y
 
+# Some detections appear to be spatial outliers
+
 # Remove false detections
 detect_filt = false_detections(detect_data, 3600, show_plot = T)
+# 3600 is arbitrary and possibly a bit high, could reduce
 
 # Filter out false detections
 detect_filt = filter(detect_filt, passed_filter == T)
-
 
 # Map again
 
@@ -70,23 +75,31 @@ detmap_f = ggplot() +
   coord_sf(xlim = xlim, ylim = ylim) +
   geom_point(data = detect_filt, aes(x = deploy_long, y = deploy_lat, color = detectedby))
 detmap_f
+# Looks better
+
 
 # Data explorations
 
-# How many animals
+# How many animals in the dataset?
 length(unique(detect_filt$animal_id))
 
-# Number of detections by receiver group
+# Where are the animals primarily detected?
 dets_rg = group_by(detect_filt, detectedby) %>% summarize(n = n())
 dets_rg
 
-# Seasonal pattern
+# Is there a seasonal migration pattern?
 ggplot(detect_filt, aes(x = julianday, y = deploy_lat, color = detectedby)) + geom_point()
 
+
+
 # Calculate detection events
+# This filters detections down into "events" based on the period of time between detections
+# Detectons are collated into one event until the animal is not detected for time_sep seconds
+# In this case, we are arbitrarily using one day, larger values = fewer events and vice versa
 events = detection_events(detect_filt, time_sep = 86400)
 
-# Species name
+# Species name, which we will use for modelling
 spp_to_model = unique(detect_data$scientificname)
 spp_to_model
 
+########## Return to presentation ##########
