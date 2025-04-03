@@ -75,7 +75,7 @@ detmap_f = ggplot() +
   coord_sf(xlim = xlim, ylim = ylim) +
   geom_point(data = detect_filt, aes(x = deploy_long, y = deploy_lat, color = detectedby))
 detmap_f
-# Looks better
+# Looks better!
 
 
 # Data explorations
@@ -90,7 +90,9 @@ dets_rg
 # Is there a seasonal migration pattern?
 ggplot(detect_filt, aes(x = julianday, y = deploy_lat, color = detectedby)) + geom_point()
 
-
+# Any issues with sampling effort?
+ggplot(detect_filt, aes(x = julianday, y = deploy_lat, color = detectedby)) + 
+  geom_point() + facet_wrap(~yearcollected)
 
 # Calculate detection events
 # This filters detections down into "events" based on the period of time between detections
@@ -103,3 +105,4 @@ spp_to_model = unique(detect_data$scientificname)
 spp_to_model
 
 ########## Return to presentation ##########
+
