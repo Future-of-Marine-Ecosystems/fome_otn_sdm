@@ -26,6 +26,8 @@ presences <- rep(1, nrow(spp_env_df))
 
 
 # Set up data for species distribution modelling - detections
+set.seed(123) 
+
 det_sdm_data <- BIOMOD_FormatingData(
   resp.name = spp_to_model,
   expl.var = bio_oracle,
@@ -49,7 +51,7 @@ myBiomodModelOut <- BIOMOD_Modeling(bm.format = det_sdm_data,
                                     OPT.strategy = 'default',
                                     metric.eval = c('TSS','ROC'),
                                     var.import = 3,
-                                    seed.val = 42, 
+                                    seed.val = 123, 
                                     do.progress = TRUE)
 
 # Plot projections
