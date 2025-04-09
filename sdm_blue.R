@@ -147,4 +147,4 @@ ggarrange(p1, p2, p3, p4,
           labels = c("RF", "GLM", "GAM", "Ensemble"),
           ncol = 2, nrow = 2)
 
-########## Return to presentation ##########
+########## Return to presentation ########## 

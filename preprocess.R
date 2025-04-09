@@ -104,5 +104,5 @@ events = detection_events(detect_filt, time_sep = 86400)
 spp_to_model = unique(detect_data$scientificname)
 spp_to_model
 
-########## Return to presentation ##########
+########## Return to presentation ########## 
 

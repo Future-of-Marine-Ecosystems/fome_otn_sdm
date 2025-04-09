@@ -91,6 +91,6 @@ time(bio_oracle) <- c(rep(as.Date("2010-01-01 UTC"), nlayers))
 # Plot environmental variables
 plot(bio_oracle)
 
-########## Return to presentation ##########
+########## Return to presentation ########## 
 
 
