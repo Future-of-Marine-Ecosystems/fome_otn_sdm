@@ -81,7 +81,7 @@ bm_projection_gam <- BIOMOD_Projection(
   proj.name = "Current", metric.binary = "all",
   metric.filter = "all"
 )
-p3 = plot(bm_projection_gam)
+p3 = plot(bm_projection_gam) 
 
 
 
@@ -137,7 +137,9 @@ myBiomodEMProj <- BIOMOD_EnsembleForecasting(bm.em = myBiomodEM,
 
 # Plot ensemble projection
 p4 = plot(myBiomodEMProj, plot.output = 'list')[[1]] # Unweighted
+p4
 p5 = plot(myBiomodEMProj, plot.output = 'list')[[3]] # Weighted
+p5
 
 # Plot all projections
 ggarrange(p4, p5,
