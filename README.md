@@ -3,9 +3,6 @@
 
 *By Reid Steele and Esteban Salazar*
 
-![alt text](https://github.com/Future-of-Marine-Ecosystems/fome_otn_sdm/blob/main/otn-dal-logo-whitev2.png "Ocean Tracking Network")
-![alt text](https://github.com/Future-of-Marine-Ecosystems/fome_otn_sdm/blob/main/FOME_Primary_WhiteGradient.png "Future of Marine Ecosystems Lab")
-
 ## Welcome!
 Hello, and thanks for your interest in our workshop! This repository contains all the code necessary to build species distribution models (SDMs) using acoustic telememtry, as well as example data from the Nova Scotia Blue Shark tagging program.
 It also contains the slide deck we used during the workshop.
@@ -41,4 +38,7 @@ Thanks to everyone who made this workshop possible!
 That includes our supervisor Dr. Derek Tittensor, who made most of the slides we used in the workshop, as well as the other members of the Future of Marine Ecosystems Lab (https://www.fomelab.org/) who helped us practice and refine this workshop.
 A special thanks as well to the Ocean Tracking Network for giving us the opportunity to put on this workshop, with a special thanks to the OTN data team members who helped us refine the workshop content, identify technical issues, created the setup script, and helped all of you with and coding issues you may have had throughout the workshop.
 Finally, thanks to all of you for your interest and attention! This is our first time running a workshop, and we're humbled that you chose to take an hour and half of your day to listen to us blather about SDMs. We hope you got something worthwhile out of it!
+
+![alt text](https://github.com/Future-of-Marine-Ecosystems/fome_otn_sdm/blob/main/otn-dal-logo-whitev2.png "Ocean Tracking Network")
+![alt text](https://github.com/Future-of-Marine-Ecosystems/fome_otn_sdm/blob/main/FOME_Primary_WhiteGradient.png "Future of Marine Ecosystems Lab")
 
