@@ -3,8 +3,8 @@
 
 *By Reid Steele and Esteban Salazar*
 
-![alt text](https://github.com/Future-of-Marine-Ecosystems/fome_otn_sdm/otn-dal-logo-whitev2.png "Ocean Tracking Network")
-![alt text](https://github.com/Future-of-Marine-Ecosystems/fome_otn_sdm/FOME_Primary_WhiteGradient.png "Future of Marine Ecosystems Lab")
+![alt text](https://github.com/Future-of-Marine-Ecosystems/fome_otn_sdm/otn-dal-logo-whitev2.png "test")
+![alt text](https://github.com/Future-of-Marine-Ecosystems/fome_otn_sdm/FOME_Primary_WhiteGradient.png "test")
 
 ## Welcome!
 Hello, and thanks for your interest in our workshop! This repository contains all the code necessary to build species distribution models (SDMs) using acoustic telememtry, as well as example data from the Nova Scotia Blue Shark tagging program.
