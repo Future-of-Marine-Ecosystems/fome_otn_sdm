@@ -5,7 +5,7 @@
 
 
 ## Welcome!
-Hello, and thanks for your interest in our workshop! This repository contains all the code necessary to build species distribution models (SDMS) using acoustic telememtry, as well as example data from the Nova Scotia Blue Shark tagging program.
+Hello, and thanks for your interest in our workshop! This repository contains all the code necessary to build species distribution models (SDMs) using acoustic telememtry, as well as example data from the Nova Scotia Blue Shark tagging program.
 It also contains the slide deck we used during the workshop.
 
 ## Setup
