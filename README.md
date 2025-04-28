@@ -8,6 +8,9 @@
 Hello, and thanks for your interest in our workshop! This repository contains all the code necessary to build species distribution models (SDMS) using acoustic telememtry, as well as example data from the Nova Scotia Blue Shark tagging program.
 It also contains the slide deck we used during the workshop.
 
+## Setup
+Before we start, please go to https://ocean-tracking-network.github.io/2025-mrf-ecr-workshop/setup.html and copy and run the SDM workshop requirements code block. This will download all of the packages you'll need to follow along during the workshop. It's also always a good idea to update R and RStudio if you have not done so recently.
+
 ## Workshop Scripts
 The workflow contained in this repository that we'll be using for the workshop is as follows:
 
