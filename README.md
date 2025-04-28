@@ -35,7 +35,7 @@ This is an example of how to run global SDMs such as those found at AquaMaps (ht
 
 ## Acknowledgements
 Thanks to everyone who made this workshop possible! 
-That includes our supervisor Dr. Derek Tittensor, who made most of the slides we used in the workshop, as well as the other members of the Future of Marine Ecosystems Lab (https://www.fomelab.org/) who helped us practice and refine this workshop.
+That includes our supervisor Dr. Derek Tittensor, who made most of the slides we used in the workshop, as well as the other members of the Future of Marine Ecosystems Lab (https://www.fomelab.org/) who helped us practice and refine this workshop. Thanks especially to Dr. Manu Dureuil, who tagged the sharks we used for our example data as part of MARI3627: Conservation of Sharks, Skates, and Rays, and provided us with images of some of them for our presentation.
 A special thanks as well to the Ocean Tracking Network for giving us the opportunity to put on this workshop, with a special thanks to the OTN data team members who helped us refine the workshop content, identify technical issues, created the setup script, and helped all of you with and coding issues you may have had throughout the workshop.
 Finally, thanks to all of you for your interest and attention! This is our first time running a workshop, and we're humbled that you chose to take an hour and half of your day to listen to us blather about SDMs. We hope you got something worthwhile out of it!
 
