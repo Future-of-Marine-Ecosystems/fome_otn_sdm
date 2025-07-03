@@ -76,7 +76,7 @@ detmap_f = ggplot() +
   geom_point(data = detect_filt, aes(x = deploy_long, y = deploy_lat, color = detectedby))
 detmap_f
 # Looks better!
-
+#save.image('data.RData')
 
 # Data explorations
 
